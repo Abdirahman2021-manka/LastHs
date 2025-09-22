@@ -16,7 +16,7 @@ SECRET_KEY = config(
     default="django-insecure-fallback-key-for-development-only-change-in-production",
 )
 
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = config("DEBUG", default=True, cast=bool)
 
 ALLOWED_HOSTS = [host.strip() for host in config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",") if host.strip()]
 
