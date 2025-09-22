@@ -4,7 +4,17 @@
     <div class="aspect-w-16 aspect-h-9 overflow-hidden">
         <img src="{{ post.featured_image.url }}" 
              alt="{{ post.featured_image_alt|default:post.title }}"
-             class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300 blog-card-image">
+             class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300 blog-card-image"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="w-full h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center" style="display:none;">
+            <i class="fas fa-image text-4xl text-primary-400"></i>
+        </div>
+    </div>
+    {% else %}
+    <div class="aspect-w-16 aspect-h-9 overflow-hidden">
+        <div class="w-full h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+            <i class="fas fa-image text-4xl text-primary-400"></i>
+        </div>
     </div>
     {% endif %}
     
