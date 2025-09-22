@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load blog_filters %}
 
 {% block title %}{{ post.title }} - HasilInvest{% endblock %}
 {% block meta_description %}{{ post.excerpt|default:post.content|truncatewords:30 }}{% endblock %}
@@ -59,7 +60,7 @@
             </div>
             {% endif %}
             
-            {{ post.content|safe }}
+            {{ post.content|format_paragraphs|safe }}
         </article>
         
         <!-- Tags -->
