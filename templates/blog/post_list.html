@@ -86,11 +86,7 @@
             {% for post in featured_posts %}
             <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover featured-post-image"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="w-full h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center" style="display:none;">
-                    <i class="fas fa-image text-4xl text-primary-400"></i>
-                </div>
+                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover featured-post-image">
                 {% else %}
                 <div class="w-full h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
                     <i class="fas fa-image text-4xl text-primary-400"></i>
@@ -141,11 +137,7 @@
             {% for post in posts %}
             <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100">
                 {% if post.featured_image %}
-                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover featured-post-image"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="w-full h-48 bg-gradient-to-br from-secondary-100 to-secondary-200 flex items-center justify-center" style="display:none;">
-                    <i class="fas fa-image text-3xl text-secondary-400"></i>
-                </div>
+                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover featured-post-image">
                 {% else %}
                 <div class="w-full h-48 bg-gradient-to-br from-secondary-100 to-secondary-200 flex items-center justify-center">
                     <i class="fas fa-image text-3xl text-secondary-400"></i>
