@@ -15,12 +15,14 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),  # CKEditor uploads
 ]
 
-# Serve static and media files in development
+# Serve static and media files
 if settings.DEBUG:
+    # Development mode - use Django's built-in serving
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 else:
-    # Serve media files in production using custom view
+    # Production mode - use custom media serving view
     urlpatterns += [
         path('media/<path:path>', serve_media, name='media'),
     ]
+    # Static files should be served by web server in production
