@@ -24,6 +24,22 @@ if not DEBUG and 'localhost' in config("ALLOWED_HOSTS", default="localhost,127.0
 
 ALLOWED_HOSTS = [host.strip() for host in config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",") if host.strip()]
 
+# CSRF Settings for production
+CSRF_TRUSTED_ORIGINS = [
+    "https://hasilinvest.ca",
+    "https://www.hasilinvest.ca",
+    "https://*.railway.app",
+    "https://*.up.railway.app",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+# Additional CSRF settings
+CSRF_COOKIE_SECURE = not DEBUG  # Use secure cookies in production
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False
+
 # ----------------------------------------------------
 # Applications
 # ----------------------------------------------------

@@ -8,7 +8,7 @@ git add .
 
 echo.
 echo 💾 Committing changes...
-git commit -m "Fix image display issues and media serving for production"
+git commit -m "Fix image display issues, media serving, and CSRF errors for production"
 
 echo.
 echo 🚀 Pushing to Railway...
