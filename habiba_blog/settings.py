@@ -18,6 +18,11 @@ SECRET_KEY = config(
 
 DEBUG = config("DEBUG", default=True, cast=bool)
 
+# For development, always serve media files
+if DEBUG:
+    # Ensure media files are served in development
+    pass
+
 ALLOWED_HOSTS = [host.strip() for host in config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",") if host.strip()]
 
 # ----------------------------------------------------

@@ -56,7 +56,17 @@
         <article class="prose prose-lg max-w-none">
             {% if post.featured_image %}
             <div class="mb-8">
-                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full rounded-xl shadow-lg">
+                <img src="{{ post.featured_image.url }}" 
+                     alt="{{ post.featured_image_alt|default:post.title }}" 
+                     class="w-full rounded-xl shadow-lg"
+                     loading="lazy"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="w-full h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center rounded-xl" style="display: none;">
+                    <div class="text-center">
+                        <i class="fas fa-image text-4xl text-gray-400 mb-2"></i>
+                        <p class="text-gray-500">Image not available</p>
+                    </div>
+                </div>
             </div>
             {% endif %}
             
@@ -217,7 +227,14 @@
             {% for related_post in related_posts %}
             <article class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 border border-gray-100">
                 {% if related_post.featured_image %}
-                <img src="{{ related_post.featured_image.url }}" alt="{{ related_post.title }}" class="w-full h-48 object-cover">
+                <img src="{{ related_post.featured_image.url }}" 
+                     alt="{{ related_post.featured_image_alt|default:related_post.title }}" 
+                     class="w-full h-48 object-cover"
+                     loading="lazy"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="w-full h-48 bg-gradient-to-br from-secondary-100 to-secondary-200 flex items-center justify-center" style="display: none;">
+                    <i class="fas fa-image text-3xl text-secondary-400"></i>
+                </div>
                 {% else %}
                 <div class="w-full h-48 bg-gradient-to-br from-secondary-100 to-secondary-200 flex items-center justify-center">
                     <i class="fas fa-image text-3xl text-secondary-400"></i>
