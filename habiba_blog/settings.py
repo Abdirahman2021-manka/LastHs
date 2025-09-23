@@ -2,9 +2,6 @@ import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 
 # ----------------------------------------------------
 # Paths
@@ -42,8 +39,6 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    "cloudinary",
-    "cloudinary_storage",
     "django_otp",
     "django_otp.plugins.otp_totp",
     "django_otp.plugins.otp_static",
@@ -233,15 +228,3 @@ LOGGING = {
         "gunicorn": {"handlers": ["console"], "level": "INFO", "propagate": False},
     },
 }
-
-# Cloudinary Configuration
-
-
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': config('CLOUDINARY_API_KEY'), 
-    'API_SECRET': config('CLOUDINARY_API_SECRET'),
-}
-
-# Use Cloudinary for media files
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
