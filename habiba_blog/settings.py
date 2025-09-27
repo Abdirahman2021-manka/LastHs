@@ -18,13 +18,11 @@ SECRET_KEY = config(
 
 DEBUG = config("DEBUG", default=True, cast=bool)
 
-# For local development, force DEBUG=True if not set
 if not DEBUG and 'localhost' in config("ALLOWED_HOSTS", default="localhost,127.0.0.1"):
     DEBUG = True
 
 ALLOWED_HOSTS = [host.strip() for host in config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",") if host.strip()]
 
-# CSRF Settings for production
 CSRF_TRUSTED_ORIGINS = [
     "https://hasilinvest.ca",
     "https://www.hasilinvest.ca",
@@ -34,8 +32,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8000",
 ]
 
-# Additional CSRF settings
-CSRF_COOKIE_SECURE = not DEBUG  # Use secure cookies in production
+CSRF_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_USE_SESSIONS = False
@@ -63,6 +60,8 @@ THIRD_PARTY_APPS = [
     "captcha",
     "crispy_forms",
     "crispy_tailwind",
+    "cloudinary",
+    "cloudinary_storage",
 ]
 
 LOCAL_APPS = [
@@ -117,23 +116,19 @@ TEMPLATES = [
 WSGI_APPLICATION = "habiba_blog.wsgi.application"
 
 # ----------------------------------------------------
-# Database — Railway only ✅
+# Database
 # ----------------------------------------------------
-# Parse DATABASE_URL and add connection parameters
 try:
     _db_config = dj_database_url.parse(config("DATABASE_URL"))
     _db_config.update({
         'CONN_MAX_AGE': 600,
         'CONN_HEALTH_CHECKS': True,
         'OPTIONS': {
-            'sslmode': 'require',  # Railway requires SSL
+            'sslmode': 'require',
         }
     })
-    DATABASES = {
-        "default": _db_config
-    }
+    DATABASES = {"default": _db_config}
 except Exception as e:
-    # Fallback to SQLite for development if DATABASE_URL is not available
     print(f"Warning: Could not parse DATABASE_URL: {e}")
     DATABASES = {
         'default': {
@@ -141,6 +136,7 @@ except Exception as e:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
 # ----------------------------------------------------
 # Password Validation
 # ----------------------------------------------------
@@ -160,21 +156,26 @@ USE_I18N = True
 USE_TZ = True
 
 # ----------------------------------------------------
-# Static & Media
+# Static & Media (Cloudinary)
 # ----------------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
-# Use WhiteNoise for static files in production
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 else:
-    # In development, use default static files storage
     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": config("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": config("CLOUDINARY_API_KEY"),
+    "API_SECRET": config("CLOUDINARY_API_SECRET"),
+}
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
