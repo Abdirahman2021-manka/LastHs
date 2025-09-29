@@ -6,6 +6,7 @@ from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField
 from taggit.managers import TaggableManager
 from django.core.validators import MinValueValidator, MaxValueValidator
+from cloudinary.models import CloudinaryField  # Add this import
 import os
 
 
@@ -14,7 +15,8 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, max_length=100)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='categories/', blank=True)
+    # Change this to CloudinaryField
+    image = CloudinaryField('image', blank=True, null=True, folder='categories/')
     
     # SEO fields
     meta_title = models.CharField(max_length=60, blank=True)
@@ -64,12 +66,12 @@ class BlogPost(models.Model):
     excerpt = models.TextField(blank=True, null=True, help_text="Short description for post preview")
     content = RichTextUploadingField()
     
-    # Media
-    featured_image = models.ImageField(
-        upload_to='blog/featured/', 
-        max_length=255,
+    # Media - Change this to CloudinaryField
+    featured_image = CloudinaryField(
+        'image',
         blank=True,
         null=True,
+        folder='blog/featured/',
         help_text="Main image for the post"
     )
     featured_image_alt = models.CharField(
@@ -210,8 +212,8 @@ class BlogResource(models.Model):
     description = models.TextField(blank=True)
     resource_type = models.CharField(max_length=20, choices=RESOURCE_TYPES, default='file')
     
-    # File upload
-    file = models.FileField(upload_to='blog/resources/', blank=True)
+    # File upload - Change to CloudinaryField
+    file = CloudinaryField('raw', blank=True, null=True, folder='blog/resources/')
     
     # External link
     external_url = models.URLField(blank=True)
@@ -232,15 +234,18 @@ class BlogResource(models.Model):
     
     def get_file_size(self):
         if self.file:
-            return self.file.size
+            return self.file.size if hasattr(self.file, 'size') else 0
         return 0
     
     def get_file_extension(self):
         if self.file:
-            return os.path.splitext(self.file.name)[1][1:].upper()
+            import os
+            filename = str(self.file)
+            return os.path.splitext(filename)[1][1:].upper()
         return ""
 
 
+# Keep the rest of your models unchanged
 class Comment(models.Model):
     """Blog post comments with threading support"""
     
