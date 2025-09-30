@@ -215,7 +215,7 @@ class BlogResource(models.Model):
     file = CloudinaryField('raw', blank=True, null=True, folder='blog/resources/')
     
     # External link
-    external_url = models.URLField(blank=True)
+    external_url = models.URLField(max_length=1000, blank=True)  # Increased
     
     # Display settings
     order = models.PositiveIntegerField(default=0)
@@ -258,7 +258,7 @@ class Comment(models.Model):
     # Comment details
     name = models.CharField(max_length=100)
     email = models.EmailField()
-    website = models.URLField(blank=True)
+    website = models.URLField(max_length=500, blank=True)  # Increased
     content = models.TextField(max_length=1000)
     
     # Moderation
@@ -328,7 +328,7 @@ class BlogView(models.Model):
     post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='blog_views')
     ip_address = models.GenericIPAddressField()
     user_agent = models.TextField(blank=True)
-    referrer = models.URLField(blank=True)
+    referrer = models.URLField(max_length=1000, blank=True)  # Increased from default 200
     
     # Location data (can be populated by external service)
     country = models.CharField(max_length=2, blank=True)
