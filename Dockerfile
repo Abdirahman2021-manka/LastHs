@@ -14,15 +14,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Create a startup script
-RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "Running migrations..."\n\
-python manage.py migrate --noinput\n\
-echo "Collecting static files..."\n\
-python manage.py collectstatic --noinput || echo "collectstatic failed, continuing..."\n\
-echo "Starting gunicorn..."\n\
-exec gunicorn hasilinvest.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --log-level debug\n\
-' > /app/start.sh && chmod +x /app/start.sh
-
-CMD ["/app/start.sh"]
+# Don't collect static during build - do it at runtime when env vars are available
+CMD echo "Starting application..." && \
+    python manage.py migrate --noinput && \
+    echo "Migrations complete" && \
+    python manage.py collectstatic --noinput --clear && \
+    echo "Static files collected" && \
+    echo "Starting Gunicorn..." && \
+    gunicorn habiba_blog.wsgi:application \
+    --bind 0.0.0.0:$PORT \
+    --workers 2 \
+    --timeout 120 \
+    --access-logfile - \
+    --error-logfile - \
+    --log-level info
