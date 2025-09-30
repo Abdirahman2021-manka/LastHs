@@ -6,20 +6,19 @@ from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField
 from taggit.managers import TaggableManager
 from django.core.validators import MinValueValidator, MaxValueValidator
-from cloudinary.models import CloudinaryField  # Add this import
+from cloudinary.models import CloudinaryField
 import os
 
 
 class Category(models.Model):
     """Blog post categories"""
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(unique=True, max_length=100)
+    slug = models.SlugField(unique=True, max_length=1000)
     description = models.TextField(blank=True)
-    # Change this to CloudinaryField
     image = CloudinaryField('image', blank=True, null=True, folder='categories/')
     
     # SEO fields
-    meta_title = models.CharField(max_length=60, blank=True)
+    meta_title = models.CharField(max_length=200, blank=True)
     meta_description = models.CharField(max_length=160, blank=True)
     
     # Display settings
@@ -62,11 +61,11 @@ class BlogPost(models.Model):
     
     # Basic fields
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, max_length=200, blank=True)
+    slug = models.SlugField(unique=True, max_length=1000, blank=True)
     excerpt = models.TextField(blank=True, null=True, help_text="Short description for post preview")
     content = RichTextUploadingField()
     
-    # Media - Change this to CloudinaryField
+    # Media
     featured_image = CloudinaryField(
         'image',
         blank=True,
@@ -141,7 +140,7 @@ class BlogPost(models.Model):
         if not self.meta_title:
             self.meta_title = self.title[:60]
         if not self.meta_description:
-            self.meta_description = self.excerpt[:160]
+            self.meta_description = self.excerpt[:160] if self.excerpt else ""
             
         # Calculate reading time (average 200 words per minute)
         if self.content:
@@ -208,11 +207,11 @@ class BlogResource(models.Model):
     ]
     
     post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='resources')
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=1000)
     description = models.TextField(blank=True)
     resource_type = models.CharField(max_length=20, choices=RESOURCE_TYPES, default='file')
     
-    # File upload - Change to CloudinaryField
+    # File upload
     file = CloudinaryField('raw', blank=True, null=True, folder='blog/resources/')
     
     # External link
@@ -239,13 +238,11 @@ class BlogResource(models.Model):
     
     def get_file_extension(self):
         if self.file:
-            import os
             filename = str(self.file)
             return os.path.splitext(filename)[1][1:].upper()
         return ""
 
 
-# Keep the rest of your models unchanged
 class Comment(models.Model):
     """Blog post comments with threading support"""
     
@@ -349,3 +346,5 @@ class BlogView(models.Model):
     
     def __str__(self):
         return f"View of {self.post.title} from {self.ip_address}"
+
+
