@@ -6,6 +6,8 @@ import dj_database_url
 # ----------------------------------------------------
 # Paths
 # ----------------------------------------------------
+# Railway Port Configuration
+PORT = int(os.environ.get('PORT', 8000))
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ----------------------------------------------------
