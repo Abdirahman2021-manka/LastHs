@@ -22,11 +22,14 @@ if __name__ == "__main__":
     port = os.environ.get('PORT', '8000')
     print(f"=== STARTING GUNICORN ON PORT {port} ===")
     
+    # Fixed: Use os.execvp correctly
     os.execvp("gunicorn", [
         "gunicorn",
         "habiba_blog.wsgi:application",
         "--bind", f"0.0.0.0:{port}",
-        "--workers", "2",
+        "--workers", "3",
         "--timeout", "120",
-        "--log-level", "info"
+        "--log-level", "info",
+        "--access-logfile", "-",
+        "--error-logfile", "-"
     ])
