@@ -169,23 +169,34 @@ if not DEBUG:
 else:
     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": config("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": config("CLOUDINARY_API_KEY"),
-    "API_SECRET": config("CLOUDINARY_API_SECRET"),
-}
-# ADD THIS - Direct Cloudinary configuration
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+# Cloudinary configuration with fallbacks
+try:
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": config("CLOUDINARY_CLOUD_NAME", default=""),
+        "API_KEY": config("CLOUDINARY_API_KEY", default=""),
+        "API_SECRET": config("CLOUDINARY_API_SECRET", default=""),
+    }
+    
+    # Only configure Cloudinary if credentials are provided
+    if config("CLOUDINARY_CLOUD_NAME", default=""):
+        import cloudinary
+        import cloudinary.uploader
+        import cloudinary.api
 
-cloudinary.config(
-    cloud_name=config("CLOUDINARY_CLOUD_NAME"),
-    api_key=config("CLOUDINARY_API_KEY"),
-    api_secret=config("CLOUDINARY_API_SECRET"),
-    secure=True
-)
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+        cloudinary.config(
+            cloud_name=config("CLOUDINARY_CLOUD_NAME"),
+            api_key=config("CLOUDINARY_API_KEY"),
+            api_secret=config("CLOUDINARY_API_SECRET"),
+            secure=True
+        )
+        DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+    else:
+        # Fallback to local storage if Cloudinary not configured
+        DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+        print("Warning: Cloudinary not configured, using local file storage")
+except Exception as e:
+    print(f"Warning: Cloudinary configuration failed: {e}")
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 MEDIA_URL = "/media/"
 
